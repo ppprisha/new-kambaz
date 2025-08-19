@@ -10,7 +10,7 @@ import AssignmentRoutes from './Kambaz/Assignments/routes.js';
 import cors from "cors";
 import session from "express-session";
 
-const CONNECTION_STRING = process.env.MONGO_CONNECTION_STRING || "mongodb://127.0.0.1:27017/Kambaz";
+const CONNECTION_STRING = process.env.MONGO_CONNECTION_STRING || "mongodb+srv://prish:<db_password>@cluster0.xtyvvkt.mongodb.net/";
 mongoose.connect(CONNECTION_STRING);
 const app = express();
 app.use(
