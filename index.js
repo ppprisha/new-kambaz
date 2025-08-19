@@ -18,11 +18,13 @@ app.use(
   cors({
     credentials: true,
     origin: (origin, callback) => {
-      const allowed = [
+     const allowed = [
   "http://localhost:5174",
   "http://127.0.0.1:5174",
   "http://localhost:4000",
+  "https://final--tiny-daifuku-0565f9.netlify.app"
 ];
+
 
       if (
         !origin ||
