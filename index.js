@@ -10,7 +10,8 @@ import AssignmentRoutes from './Kambaz/Assignments/routes.js';
 import cors from "cors";
 import session from "express-session";
 
-const CONNECTION_STRING = process.env.MONGO_CONNECTION_STRING || "mongodb+srv://prish:<R5UszwQZmALNlRu8>@cluster0.xtyvvkt.mongodb.net/";
+const CONNECTION_STRING = process.env.MONGO_CONNECTION_STRING || 
+  "mongodb+srv://prish:R5UszwQZmALNlRu8@cluster0.xtyvvkt.mongodb.net/kambaz?retryWrites=true&w=majority&tls=true";
 mongoose.connect(CONNECTION_STRING);
 const app = express();
 app.use(
@@ -18,9 +19,11 @@ app.use(
     credentials: true,
     origin: (origin, callback) => {
       const allowed = [
-        "http://localhost:5173",
-        "http://localhost:4000"
-      ];
+  "http://localhost:5174",
+  "http://127.0.0.1:5174",
+  "http://localhost:4000",
+];
+
       if (
         !origin ||
         allowed.includes(origin) ||
