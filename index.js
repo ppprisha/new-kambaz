@@ -16,10 +16,7 @@ const CONNECTION_STRING =
   "mongodb+srv://prish:R5UszwQZmALNlRu8@cluster0.xtyvvkt.mongodb.net/kambaz?retryWrites=true&w=majority&tls=true";
 
 mongoose
-  .connect(CONNECTION_STRING, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect(CONNECTION_STRING)
   .then(() => console.log("✅ MongoDB connected"))
   .catch((err) => console.error("❌ MongoDB connection error:", err));
 
@@ -28,22 +25,19 @@ const app = express();
 const allowedOrigins = [
   "http://localhost:5174",
   "http://127.0.0.1:5174",
-  "http://localhost:4000",
   "https://final--tiny-daifuku-0565f9.netlify.app",
 ];
 
 app.use(
   cors({
-    credentials: true,
     origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
+      if (!origin || allowedOrigins.includes(origin) || /\.netlify\.app$/.test(origin)) {
         callback(null, true);
       } else {
-        callback(
-          new Error("CORS not allowed for this origin: " + origin)
-        );
+        callback(new Error("CORS not allowed for this origin: " + origin));
       }
     },
+    credentials: true, // allow cookies
   })
 );
 
@@ -51,14 +45,19 @@ const sessionOptions = {
   secret: process.env.SESSION_SECRET || "Kambaz",
   resave: false,
   saveUninitialized: false,
+  cookie: {
+    // defaults for development
+    secure: false,
+    sameSite: "lax",
+  },
 };
 
-if (process.env.NODE_ENV !== "development") {
+if (process.env.NODE_ENV === "production") {
   sessionOptions.proxy = true;
   sessionOptions.cookie = {
-    sameSite: "none",
-    secure: true, 
-    domain: process.env.NODE_SERVER_DOMAIN || undefined,
+    secure: true, // HTTPS only
+    sameSite: "none", // allow cross-site cookies
+    domain: ".onrender.com", // adjust to your backend domain
   };
 }
 
@@ -75,6 +74,5 @@ Hello(app);
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-  console.log(`MongoDB: ${CONNECTION_STRING}`);
+  console.log(`🚀 Server running on port ${PORT}`);
 });
